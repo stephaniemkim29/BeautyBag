@@ -13,7 +13,7 @@ struct ProfileView: View {
 
     var body: some View {
 
-             
+             //comment to check commit
                 
                 //profile information
                 VStack (spacing:10) {
