@@ -8,30 +8,54 @@
 import SwiftUI
 
 struct RateNow: View {
+    let onRatingComplete: (Int, Double) -> Void
     let product: Product
+    let questions = [
+            "Application",
+            "Effectiveness",
+            "Formula",
+            "Finish",
+        ]
+    @State private var currentQuestionIndex = 0
+    @State private var ratings: [Int] = [0, 0, 0, 0]
+    @State private var showCalculateButton = false
+    var averageRating: Double {
+        
+            let total = ratings.reduce(0, +)
+            return total == 0 ? 0 : Double(total) / Double(ratings.count)
+        }
 
         var body: some View {
-            VStack {
-                product.image
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 150, height: 150)
-            
-                    .padding()
+            VStack{
+                VStack {
+                    product.image
+                        
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 125, height: 124)
+                
+                        .padding()
 
-                Text("Rate \(product.name)")
-                    .font(.largeTitle)
-                    .padding()
-
-                Text("Brand: \(product.brand)")
-                    .font(.headline)
-                    .foregroundColor(.gray)
-                    .padding()
-
-                Spacer()
+                    VStack(spacing:10) {
+                        Text(product.name)
+                            .font(.headline)
+                        
+                        
+                        Text("Brand: \(product.brand)")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                        
+                        
+                        Spacer()
+                    }
+                }
+                
+                
+                
             }
+            
             .navigationTitle("Rate Now")
-            .navigationBarTitleDisplayMode(.inline)
+            
         }
 }
 
