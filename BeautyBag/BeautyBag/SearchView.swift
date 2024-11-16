@@ -5,17 +5,28 @@
 //  Created by Sana Tahir on 11/16/24.
 //
 
+
 import SwiftUI
+
+struct SearchProduct: Identifiable, Decodable {
+    let id: String
+    let name: String
+    let brand: String
+    let price: String
+    let imageUrl: String
+}
 
 struct SearchView: View {
     @State private var searchText: String = ""
-    @State private var selectedTab: String = "Products" //This will be made the default tab
-    
+    @State private var selectedTab: String = "Products"
+    @State private var products: [SearchProduct] = []
+    @State private var isLoading: Bool = true
+    @State private var errorMessage: String?
+
     var body: some View {
         VStack {
             HStack {
                 Button(action: {
-                    //go back
                 }) {
                     Label("Back", systemImage: "chevron.left")
                 }
@@ -23,25 +34,23 @@ struct SearchView: View {
                 Spacer()
                 Text("Search")
                     .font(.headline)
-                
                 Spacer()
                 Button(action: {
-                    //share
                 }) {
                     Image(systemName: "square.and.arrow.up")
                 }
                 .padding(.trailing, 10)
             }
             .padding(.vertical, 10)
-            
+
             HStack {
                 TextField("Search", text: $searchText)
                     .padding(10)
                     .background(Color.gray.opacity(0.2))
                     .cornerRadius(8)
                     .padding(.horizontal, 10)
+
                 Button(action: {
-                    //voice search
                 }) {
                     Image(systemName: "mic")
                         .padding(10)
@@ -50,8 +59,8 @@ struct SearchView: View {
                 }
                 .padding(.trailing, 10)
             }
-            
-            HStack{
+
+            HStack {
                 Button(action: {
                     selectedTab = "People"
                 }) {
@@ -59,10 +68,7 @@ struct SearchView: View {
                         .font(.subheadline)
                         .foregroundColor(selectedTab == "People" ? .white : .black)
                         .padding()
-                        .background(
-                            selectedTab == "People" ? Color.black :
-                                Color.gray.opacity(0.2)
-                        )
+                        .background(selectedTab == "People" ? Color.black : Color.gray.opacity(0.2))
                         .cornerRadius(8)
                 }
                 Button(action: {
@@ -78,27 +84,57 @@ struct SearchView: View {
             }
             .padding(.horizontal, 15)
             .padding(.vertical, 5)
-            
-            //Filing out the content based on the selected tab
+
+            // Content
             ScrollView {
                 if selectedTab == "Products" {
-                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
-                        ForEach(1..<9) {
-                            index in
-                            RoundedRectangle(cornerRadius: 10)
-                                .fill(Color.gray.opacity(0.3))
-                                .frame(height: 120)
-                                .overlay(Text("Product\(index)")
-                                    .foregroundColor(.black))
+                    if isLoading {
+                        ProgressView("Loading Products...")
+                            .padding()
+                    } else if let errorMessage = errorMessage {
+                        Text("Error: \(errorMessage)")
+                            .foregroundColor(.red)
+                            .padding()
+                    } else {
+                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
+                            ForEach(products) { product in
+                                VStack {
+                                    AsyncImage(url: URL(string: product.imageUrl)) { image in
+                                        image
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(height: 100)
+                                    } placeholder: {
+                                        ProgressView()
+                                    }
+                                    Text(product.name)
+                                        .font(.subheadline)
+                                        .multilineTextAlignment(.center)
+                                    Text(product.brand)
+                                        .font(.caption)
+                                        .foregroundColor(.gray)
+                                    Text("$\(product.price)")
+                                        .font(.subheadline)
+                                        .fontWeight(.bold)
+                                }
+                                .padding()
+                                .background(Color.white)
+                                .cornerRadius(10)
+                                .shadow(color: Color.gray.opacity(0.3), radius: 5)
+                            }
                         }
+                        .padding(.horizontal, 15)
                     }
+                } else if selectedTab == "People" {
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
-                        ForEach(1..<7) {
-                            index in
+                        ForEach(1..<5) { index in
                             Circle()
                                 .fill(Color.gray.opacity(0.3))
                                 .frame(width: 100, height: 100)
-                                .overlay(Text("Person\(index)") .foregroundColor(.black))
+                                .overlay(
+                                    Text("Person \(index)")
+                                        .foregroundColor(.black)
+                                )
                         }
                     }
                     .padding(.horizontal, 15)
@@ -106,6 +142,54 @@ struct SearchView: View {
             }
         }
         .navigationBarHidden(true)
+        .onAppear(perform: fetchProducts)
+    }
+
+    func fetchProducts() {
+        guard let url = URL(string: "https://sephora.p.rapidapi.com/us/products/v2/detail") else {
+            errorMessage = "Invalid URL"
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.allHTTPHeaderFields = [
+            "x-rapidapi-key": "6de6ac746amsh8d043de1b2046a2p10b11ajsn1536fbcfd772",
+            "x-rapidapi-host": "sephora.p.rapidapi.com"
+        ]
+
+        let session = URLSession.shared
+        session.dataTask(with: request) { data, response, error in
+            if let error = error {
+                DispatchQueue.main.async {
+                    errorMessage = error.localizedDescription
+                    isLoading = false
+                }
+                return
+            }
+
+            guard let data = data else {
+                DispatchQueue.main.async {
+                    errorMessage = "No data received"
+                    isLoading = false
+                }
+                return
+            }
+
+            do {
+                // Assuming the API returns an array of products
+                let displayproducts = try JSONDecoder().decode([Product].self, from: data)
+                DispatchQueue.main.async {
+                    self.products = products
+                    self.isLoading = false
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    errorMessage = "Failed to decode response"
+                    isLoading = false
+                }
+            }
+        }.resume()
     }
 }
 
@@ -114,3 +198,4 @@ struct SearchView_Previews: PreviewProvider {
         SearchView()
     }
 }
+

@@ -22,7 +22,6 @@ struct CurrentlyUsing: View {
                 Spacer()
                 
                 Button(action: {
-                    //add edit funtionality
                 }) {
                     Image(systemName: "paintbrush")
                 }
@@ -35,7 +34,6 @@ struct CurrentlyUsing: View {
                     ForEach(1..<13) {
                         index in
                         Button(action: {
-                            //add the product specific functions
                         }) {
                             RoundedRectangle(cornerRadius: 10)
                                 .fill(Color.gray.opacity(0.3))
