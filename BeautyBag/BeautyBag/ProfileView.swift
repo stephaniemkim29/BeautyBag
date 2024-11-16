@@ -40,16 +40,15 @@ struct ProfileView: View {
                         )
                 }
 
-                HStack{
+                HStack(spacing: 50){
                     Spacer()
                     VStack{
                         Text("#Followers")
                             .font(.subheadline)
                     }
-                    Spacer()
                     VStack {
                         Text("#Following")
-                            .font(.headline)
+                            .font(.subheadline)
                     }
                     Spacer()
                 }
@@ -62,9 +61,14 @@ struct ProfileView: View {
                         NavigationLink(destination: MustHaves()) {
                             ButtonView(title: "Must Haves")
                         }
-        //                NavigationLink(destination: MyBag()) {
-          //                  ButtonView(title: "My Bag")
-            //            }
+                       
+                    }
+                    NavigationLink(destination: MyBag()) {
+                        ButtonView(title: "My Bag")
+                            .frame(width: 150, height: 50) // Custom size
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
                     }
                 }
          
