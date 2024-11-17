@@ -13,7 +13,7 @@ struct BeautyBagApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ProfileView()
+            ProfileView() 
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }

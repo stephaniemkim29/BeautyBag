@@ -48,7 +48,7 @@
 //}
 import Foundation
 
-struct Products {
+struct Products: Decodable, Equatable {
     let brandName: String
     let productName: String
 }
@@ -63,6 +63,7 @@ class SephoraAPIService {
             completion(nil, NSError(domain: "Invalid URL", code: -1, userInfo: nil))
             return
         }
+
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
