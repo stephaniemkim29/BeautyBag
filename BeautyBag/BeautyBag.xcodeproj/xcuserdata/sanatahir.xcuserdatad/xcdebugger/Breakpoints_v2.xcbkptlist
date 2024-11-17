@@ -7,17 +7,17 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "B9465C15-11D7-4B51-A6DD-CF455FDAD891"
+            uuid = "D6868547-D87B-42AA-A8F7-21AF96752E5E"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BeautyBag/CurrentlyUsing.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "54"
-            endingLineNumber = "54"
-            landmarkName = "body"
-            landmarkType = "24">
+            startingLineNumber = "95"
+            endingLineNumber = "95"
+            landmarkName = "CurrentlyUsing_Previews"
+            landmarkType = "14">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
