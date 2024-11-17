@@ -70,6 +70,8 @@
 //            )
 //        )
 //}
+
+/*
 import SwiftUI
 struct RateNow: View {
     let product: Product
@@ -104,4 +106,100 @@ struct RateNow: View {
                 imageName: "hourglass-vanish-concealer"
             )
         )
+}
+*/
+/*
+import SwiftUI
+struct RateNow: View {
+    @Binding var product: Product
+    @State private var currentRating: Int = 0
+    
+    var body: some View {
+        VStack {
+            product.image
+                .resizable()
+                .scaledToFit()
+                .frame(width: 150, height: 150)
+                .padding()
+            
+            Text("Rate \(product.name)")
+                .font(.largeTitle)
+                .padding()
+            
+            Text("Brand: \(product.brand)")
+                .font(.headline)
+                .foregroundColor(.gray)
+                .padding()
+            
+            // Rating Picker
+            Picker("Rating", selection: $currentRating) {
+                ForEach(1...5, id: \.self) { value in
+                    Text("\(value) Stars").tag(value)
+                }
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            .padding()
+            
+            Button("Save Rating") {
+                product.rating = currentRating
+            }
+            .buttonStyle(.borderedProminent)
+            .padding()
+            
+            Spacer()
+        }
+        .onAppear {
+            currentRating = product.rating ?? 0
+        }
+        .navigationTitle("Rate Now")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+*/
+import SwiftUI
+struct RateNow: View {
+    @Binding var product: Product
+    @State private var currentRating: Int = 0
+
+    var body: some View {
+        VStack {
+            product.image
+                .resizable()
+                .scaledToFit()
+                .frame(width: 150, height: 150)
+                .padding()
+
+            Text("Rate \(product.name)")
+                .font(.largeTitle)
+                .padding()
+
+            Text("Brand: \(product.brand)")
+                .font(.headline)
+                .foregroundColor(.gray)
+                .padding()
+
+            // Rating Picker
+            Picker("Rating", selection: $currentRating) {
+                ForEach(1...5, id: \.self) { value in
+                    Text("\(value) Stars").tag(value)
+                }
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            .padding()
+
+            Button("Save Rating") {
+                product.rating = currentRating
+            }
+            .buttonStyle(.borderedProminent)
+            .padding()
+
+            Spacer()
+        }
+        .onAppear {
+            currentRating = product.rating ?? 0
+        }
+        .navigationTitle("Rate Now")
+        .navigationBarTitleDisplayMode(.inline)
+    }
 }

@@ -119,7 +119,20 @@
 //        }
 //    }
 //}
+/*
 import SwiftUI
+struct Product: Identifiable, Codable {
+    let id: Int
+    let name: String
+    let brand: String
+    let type: String
+    var imageName: String
+    var rating: Int? = nil
+    var image: Image {
+        Image(imageName)
+    }
+}*/
+/*
 struct Product: Identifiable, Codable {
     let id: Int
     let name: String
@@ -130,35 +143,68 @@ struct Product: Identifiable, Codable {
         Image(imageName)
     }
 }
-    
+    */
+
+import SwiftUI
+
+// Product Model
+struct Product: Identifiable, Codable {
+    let id: Int
+    let name: String
+    let brand: String
+    let type: String
+    var imageName: String
+    var rating: Int? = nil // Optional rating
+    var image: Image {
+        Image(imageName)
+    }
+}
+
+// Routine Model
+struct Routine: Identifiable {
+    let id: UUID
+    let name: String
+}
+
+// Mock Routines
+let sampleRoutines = [
+    Routine(id: UUID(), name: "Morning Skincare"),
+    Routine(id: UUID(), name: "Nighttime Routine"),
+    Routine(id: UUID(), name: "Dandy Hacks")
+]
+
 struct MyBag: View {
-    
-    let products = [
+    // Sample Products
+    @State private var products = [
         Product(id: 1, name: "Vanish Airbrush Concealer", brand: "Hourglass", type: "Face", imageName: "hourglass-vanish-concealer"),
         Product(id: 2, name: "Banana Bright Eye Cream", brand: "Olehenriksen", type: "Skin", imageName: "olehenriksen-bananabright-eye"),
         Product(id: 3, name: "Lip Butter Balm", brand: "Summer Fridays", type: "Lip", imageName: "summerfridays-butterbalm"),
         Product(id: 4, name: "Water Cream", brand: "Tatcha", type: "Skin", imageName: "tatcha-watercream")
     ]
-    @State private var searchText : String = ""
+    @State private var searchText: String = ""
     @State private var selectedType: String? = nil
     @State private var navigateToRate = false
-    @State private var navigateToRoutine = false
     @State private var selectedProduct: Product? = nil
-    
+    @State private var showRoutineSheet = false
+    @State private var selectedProductForRoutine: Product? = nil
+
+    // Filtered Products
     var filteredProducts: [Product] {
         products.filter { product in
             (selectedType == nil || product.type == selectedType) &&
             (searchText.isEmpty || product.name.localizedCaseInsensitiveContains(searchText) || product.brand.localizedCaseInsensitiveContains(searchText))
         }
     }
+
     var body: some View {
         NavigationView {
-            VStack{
-                VStack{
+            VStack {
+                // Search and Filter Bar
+                VStack {
                     TextField("Search products...", text: $searchText)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .padding(.horizontal)
-                    // Filter Buttons
+                    
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
                             Button("All") {
@@ -167,6 +213,7 @@ struct MyBag: View {
                             .padding()
                             .background(selectedType == nil ? Color.gray.opacity(0.3) : Color.clear)
                             .cornerRadius(8)
+                            
                             ForEach(["Face", "Eye", "Lip", "Cheek", "Skin"], id: \.self) { type in
                                 Button(type) {
                                     selectedType = type
@@ -180,43 +227,48 @@ struct MyBag: View {
                     }
                 }
                 
-                List(filteredProducts) { products in
+                // Product List
+                List(filteredProducts) { product in
                     HStack {
-                        products.image
+                        product.image
                             .resizable()
                             .frame(width: 50, height: 50)
-                            
                             .padding(.trailing, 8)
                         
                         VStack(alignment: .leading) {
-                            Text(products.name)
+                            Text(product.name)
                                 .font(.headline)
                             
-                            Text(products.brand)
+                            if let rating = product.rating {
+                                Text("⭐️ \(rating)/5")
+                                    .font(.subheadline)
+                                    .foregroundColor(.yellow)
+                            }
+                            
+                            Text(product.brand)
                                 .font(.subheadline)
                                 .foregroundColor(.gray)
                         }
                         .contextMenu {
                             Button("Rate Now") {
-                                selectedProduct = products
+                                selectedProduct = product
                                 navigateToRate = true
                             }
                             Button("Add to Routine") {
-                                selectedProduct = products
-                                navigateToRoutine = true
+                                selectedProductForRoutine = product
+                                showRoutineSheet = true
                             }
                         }
-                    
                     }
                 }
                 .background(
                     NavigationLink(
-                        destination: RateNow(product: selectedProduct ?? products[0]),
+                        destination: RateNow(product: $products[products.firstIndex(where: { $0.id == selectedProduct?.id }) ?? 0]),
                         isActive: $navigateToRate,
                         label: { EmptyView() }
                     )
                 )
-        
+                
                 .toolbar {
                     ToolbarItem(placement: .principal) {
                         Text("My Bag")
@@ -225,11 +277,12 @@ struct MyBag: View {
                     }
                 }
             }
+            .sheet(isPresented: $showRoutineSheet) {
+                RoutineSelectionView(product: $selectedProductForRoutine, routines: sampleRoutines)
+            }
         }
     }
 }
-struct MyBag_Previews: PreviewProvider {
-    static var previews: some View {
-        MyBag()
-    }
-}
+
+
+
