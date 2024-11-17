@@ -100,26 +100,47 @@ struct ProfileView: View {
                 }
                 .navigationBarHidden(true)
             }
-            .tabItem {
-                Label("Profile", systemImage: "person.circle")
-            }
+//            .tabItem {
+//                Label("Profile", systemImage: "person.circle")
+//            }
+//
+//            NavigationView {
+//                SearchView()
+//            }
+//            .tabItem {
+//                Label("Search", systemImage: "magnifyingglass")
+//            }
+//
+//            Text("Camera")
+//                .tabItem {
+//                    Label("Camera", systemImage: "camera")
+//                }
+//
+//            Text("Settings")
+//                .tabItem {
+//                    Label("Settings", systemImage: "gearshape")
+//                }
+            Text("Socials")
+               .tabItem {
+                   Label("Socials", systemImage: "person.3")
+               }
 
-            NavigationView {
-                SearchView()
-            }
-            .tabItem {
-                Label("Search", systemImage: "magnifyingglass")
-            }
+               NavigationView {
+                   SearchView()
+               }
+               .tabItem {
+                   Label("Search", systemImage: "magnifyingglass")
+               }
 
-            Text("Camera")
-                .tabItem {
-                    Label("Camera", systemImage: "camera")
-                }
+               Text("Camera")
+                   .tabItem {
+                       Label("Camera", systemImage: "camera")
+                   }
 
-            Text("Settings")
-                .tabItem {
-                    Label("Settings", systemImage: "gearshape")
-                }
+               Text("Profile")
+                   .tabItem {
+                       Label("Profile", systemImage: "person.circle")
+                   }
         }
     }
 }
