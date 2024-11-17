@@ -10,9 +10,22 @@
 		F77739182CE8605000064E05 /* BeautyBag.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BeautyBag.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		F7C9EE312CE9B36E00877ABF /* Exceptions for "BeautyBag" folder in "BeautyBag" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = F77739172CE8605000064E05 /* BeautyBag */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		F777391A2CE8605000064E05 /* BeautyBag */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				F7C9EE312CE9B36E00877ABF /* Exceptions for "BeautyBag" folder in "BeautyBag" target */,
+			);
 			path = BeautyBag;
 			sourceTree = "<group>";
 		};
